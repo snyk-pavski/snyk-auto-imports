@@ -4,9 +4,11 @@ import subprocess
 
 # File path for import-projects.json
 json_file = 'import-projects.json'
+workflow_repo_name="snyk-pavski/snyk-auto-imports"
+
 
 # Read the existing JSON and append the new target
-def update_json_file(orgId, integrationId, owner, repo_name, branch_name):
+def update_json_file(orgId, integrationId, owner, repo_choice, branch_name):
     if os.path.exists(json_file):
         with open(json_file, 'r') as file:
             data = json.load(file)
@@ -19,7 +21,7 @@ def update_json_file(orgId, integrationId, owner, repo_name, branch_name):
         "orgId": orgId,
         "integrationId": integrationId,
         "target": {
-            "name": repo_name,
+            "name": repo_choice,
             "owner": owner,
             "branch": branch_name
         }
@@ -35,7 +37,10 @@ def update_json_file(orgId, integrationId, owner, repo_name, branch_name):
     print(json.dumps(new_target, indent=4))
 
 # Function to create a PR in the GitHub repository
-def create_pr(branch_name, repo_name="snyk-pavski/snyk-imports"):
+def create_pr(branch_name):
+    # Create a new branch
+    subprocess.run(["git", "checkout", "-b", branch_name])
+
     # Stage the changes
     subprocess.run(["git", "add", json_file])
 
@@ -43,14 +48,11 @@ def create_pr(branch_name, repo_name="snyk-pavski/snyk-imports"):
     commit_message = f"Add new import target for {branch_name}"
     subprocess.run(["git", "commit", "-m", commit_message])
 
-    # Create a new branch
-    subprocess.run(["git", "checkout", "-b", branch_name])
-
-    # Push the branch
+     # Push the branch
     subprocess.run(["git", "push", "origin", branch_name])
 
     # Use the GitHub CLI (gh) to create a PR
-    subprocess.run(["gh", "pr", "create", "--title", commit_message, "--body", "Adding new import target", "--repo", repo_name])
+    subprocess.run(["gh", "pr", "create", "--title", commit_message, "--body", "Adding new import target", "--repo", workflow_repo_name])
 
 # Main function to ask for inputs and update the JSON
 def main():
