@@ -23,17 +23,23 @@ API_VERSION = "2024-08-15"
 RATE_LIMIT_DELAY = 0.2 (in seconds)
 ```
 
+Update the value of `workflow_repo_name` in `import_projects.py` to the name of the repository owning the import workflow.
+```py
+# Name of the repo owning the import workflow
+workflow_repo_name="snyk-pavski/snyk-auto-imports"
+```
+
 ### Configure Github Actions Workflow
 
 1. Set necessarry secrets up:
 
     ```
-    GH_TOKEN    # See link below
-    SNYK_PAT    # Use a Personal PAT or a Service Account PAT
-    SNYK_API    # https://api.snyk.io/v1 / https://api.eu.snyk.io/v1
+    secrets.GH_TOKEN    # See link below
+    secrets.SNYK_PAT    # Use a Personal PAT or a Service Account PAT
+    secrets.SNYK_API    # https://api.snyk.io/v1 / https://api.eu.snyk.io/v1
 
-    GIT_EMAIL
-    GIT_USERNAME
+    secrets.GIT_EMAIL
+    secrets.GIT_USERNAME
     ```
     [GH Token Requirenments](https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-scm-integrations/github-enterprise#generate-a-personal-access-token-from-your-github-settings)
 
