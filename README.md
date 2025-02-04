@@ -28,12 +28,12 @@ RATE_LIMIT_DELAY = 0.2 (in seconds)
 1. Set necessarry secrets up:
 
     ```
-    secrets.GH_TOKEN    # See link below
-    secrets.SNYK_PAT    # Use a Personal PAT or a Service Account PAT
-    secrets.SNYK_API    # https://api.snyk.io/v1 / https://api.eu.snyk.io/v1
+    GH_TOKEN    # See link below
+    SNYK_PAT    # Use a Personal PAT or a Service Account PAT
+    SNYK_API    # https://api.snyk.io/v1 / https://api.eu.snyk.io/v1
 
-    secrets.GIT_EMAIL
-    secrets.GIT_USERNAME
+    GIT_EMAIL
+    GIT_USERNAME
     ```
     [GH Token Requirenments](https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-scm-integrations/github-enterprise#generate-a-personal-access-token-from-your-github-settings)
 
