@@ -2,10 +2,11 @@ import json
 import os
 import subprocess
 
-# File path for import-projects.json
-json_file = 'import-projects.json'
+# Name of the repo owning the import workflow
 workflow_repo_name="snyk-pavski/snyk-auto-imports"
 
+# File path for import-projects.json
+json_file = 'import-projects.json'
 
 # Read the existing JSON and append the new target
 def update_json_file(orgId, integrationId, owner, repo_choice, branch_name):
@@ -38,21 +39,17 @@ def update_json_file(orgId, integrationId, owner, repo_choice, branch_name):
 
 # Function to create a PR in the GitHub repository
 def create_pr(branch_name):
-    # Create a new branch
+    # Get the current branch before creating a new one
+    current_branch = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, check=True).stdout.strip()
     subprocess.run(["git", "checkout", "-b", branch_name])
-
-    # Stage the changes
     subprocess.run(["git", "add", json_file])
-
-    # Commit the changes
     commit_message = f"Add new import target for {branch_name}"
     subprocess.run(["git", "commit", "-m", commit_message])
-
-     # Push the branch
     subprocess.run(["git", "push", "origin", branch_name])
-
-    # Use the GitHub CLI (gh) to create a PR
     subprocess.run(["gh", "pr", "create", "--title", commit_message, "--body", "Adding new import target", "--repo", workflow_repo_name])
+    subprocess.run(["git", "checkout", current_branch], check=True)
+
+    print(f"Switched back to branch: {current_branch}")
 
 # Main function to ask for inputs and update the JSON
 def main():
