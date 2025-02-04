@@ -41,6 +41,10 @@ def update_json_file(orgId, integrationId, owner, repo_choice, branch_name):
 def create_pr(branch_name):
     # Get the current branch before creating a new one
     current_branch = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, check=True).stdout.strip()
+
+    # Pull the latest import-targets.json
+    # subprocess.run(["git", "fetch", "origin", current_branch], check=True) 
+    
     subprocess.run(["git", "checkout", "-b", branch_name])
     subprocess.run(["git", "add", json_file])
     commit_message = f"Add new import target for {branch_name}"
@@ -51,6 +55,7 @@ def create_pr(branch_name):
 
     print(f"Switched back to branch: {current_branch}")
 
+
 # Main function to ask for inputs and update the JSON
 def main():
     org_choice = input("Enter the GitHub Org (owner) name: ").strip()
@@ -58,6 +63,10 @@ def main():
     branch_choice = input("Enter the branch name you want to import: ").strip()
     orgId = input("Enter the ID of your Snyk Org: ").strip()
     integrationId = input("Enter the ID of your Snyk Integration: ").strip()
+
+    current_branch = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, check=True).stdout.strip()
+    subprocess.run(["git", "pull"], check=True)
+    print(f"Pulled the latest changes in: {current_branch}")
 
     # Update the JSON file with the provided details
     update_json_file(orgId, integrationId, org_choice, repo_choice, branch_choice)
