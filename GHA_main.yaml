@@ -1,4 +1,4 @@
-name: Import and Commit
+name: Import Snyk Projects
 
 on:
   push:
