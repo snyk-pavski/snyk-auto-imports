@@ -1,0 +1,39 @@
+name: Import and Commit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'import-projects.json'
+
+env:
+  SNYK_LOG_PATH: ${{ github.workspace }}/logs
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+jobs:
+  import-projects:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1  
+          token: ${{ secrets.GH_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm install -g snyk-api-import@latest
+      - name: API Import
+        run: DEBUG=*snyk* snyk-api-import import --file ./import-projects.json
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_PAT }}
+          SNYK_API: ${{ secrets.SNYK_API }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Set Git User Name and Email
+        run: |
+          git config --local user.email "${{ secrets.GIT_EMAIL }}"
+          git config --local user.name "${{ secrets.GIT_USERNAME }}"
+      - name: Add and Commit
+        run: |
+          git add .
+          git commit -m "Add imported targets log"
+          git push
